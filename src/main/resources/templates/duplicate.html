@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>概算見積もり確認</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{http://fonts.googleapis.com/css?family=Exo:900}"
+          href="http://fonts.googleapis.com/css?family=Exo:900"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="../static/css/main.css">
+</head>
+
+<body>
+<nav th:insert="header.html :: header"></nav>
+<div class="container">
+    <form th:action="@{/result}" th:object="${userOrderForm}" class="form-horizontal" method="post">
+        <h1>お見積り情報確認</h1>
+        <!--    登録情報が重複している際のエラー-->
+        <h2>すでに登録された情報です．</h2>
+        <!--    入力内容に不都合がある際のエラー-->
+        <ul th:if="${#fields.hasErrors('all')}">
+            <li th:each="err : ${#fields.errors('all')}" th:text="${err}"></li>
+        </ul>
+        <div class="col-sm-12">
+            <h4>個人情報</h4>
+            <table class="table table-bordered">
+                <col span="1" style="background-color: #A9B7C7;">
+                <col span="2" style="background-color: #FFFFFF;">
+                <tbody>
+                <tr>
+                    <th style="width: 40%">氏名</th>
+                    <td><span th:text="*{customerName}"></span></td>
+                    <input type="hidden" name="customerName" id="customerName" th:value="*{customerName}"/>
+                </tr>
+                <tr>
+                    <th>連絡先TEL</th>
+                    <td><span th:text="*{tel}"></span></td>
+                    <input type="hidden" name="tel" id="tel" th:value="*{tel}"/>
+                </tr>
+                <tr>
+                    <th>連絡先メールアドレス</th>
+                    <td><span th:text="*{email}"></span></td>
+                    <input type="hidden" name="email" id="email" th:value="*{email}"/>
+                </tr>
+                <tr>
+                    <th>転居元住所（都道府県）</th>
+                    <td>
+                        <span th:each="prefecture : ${prefectures}" th:text="${prefecture.prefectureName}" th:if="${prefecture.prefectureId}==*{oldPrefectureId}">東京</span>
+                    </td>
+                    <input type="hidden" name="oldPrefectureId" id="oldPrefectureId" th:value="*{oldPrefectureId}"/>
+                </tr>
+                <tr>
+                    <th>転居元住所（市区町村以下）</th>
+                    <td><span th:text="*{oldAddress}"></span></td>
+                    <input type="hidden" name="oldAddress" id="oldAddress" th:value="*{oldAddress}"/>
+                </tr>
+                <tr>
+                    <th>転居先住所（都道府県）</th>
+                    <td>
+                        <span th:each="prefecture : ${prefectures}" th:text="${prefecture.prefectureName}" th:if="${prefecture.prefectureId}==*{newPrefectureId}">大阪</span>
+                    </td>
+                    <input type="hidden" name="newPrefectureId" id="newPrefectureId" th:value="*{newPrefectureId}"/>
+                </tr>
+                <tr>
+                    <th>転居先住所（市区町村以下）</th>
+                    <td><span th:text="*{newAddress}"></span></td>
+                    <input type="hidden" name="newAddress" id="newAddress" th:value="*{newAddress}"/>
+                </tr>
+                </tbody>
+            </table>
+            <h4>荷物情報</h4>
+            <table class="table table-bordered">
+                <col span="1" style="background-color: #A9B7C7;">
+                <col span="2" style="background-color: #FFFFFF;">
+                <tbody>
+                <tr>
+                    <th style="width: 40%">段ボールの個数</th>
+                    <td><span th:text="*{box}"></span></td>
+                    <input type="hidden" name="box" id="box" th:value="*{box}"/>
+                </tr>
+                <tr>
+                    <th>ベッドの個数</th>
+                    <td><span th:text="*{bed}"></span></td>
+                    <input type="hidden" name="bed" id="bed" th:value="*{bed}"/>
+                </tr>
+                <tr>
+                    <th>自転車の個数</th>
+                    <td><span th:text="*{bicycle}"></span></td>
+                    <input type="hidden" name="bicycle" id="bicycle" th:value="*{bicycle}"/>
+                </tr>
+                <tr>
+                    <th>洗濯機の個数</th>
+                    <td><span th:text="*{washingMachine}"></span></td>
+                    <input type="hidden" name="washingMachine" id="washingMachine" th:value="*{washingMachine}"/>
+                </tr>
+                <tr>
+                    <th>洗濯機の設置工事申し込み</th>
+                    <td><span th:text="*{hasWashingMachineSettingOption} ? 'あり' : 'なし'"></span></td>
+                    <input type="hidden" name="hasWashingMachineSettingOption" id="hasWashingMachineSettingOption" th:value="*{hasWashingMachineSettingOption}"/>
+                </tr>
+                </tbody>
+            </table>
+            <div class="form-group">
+                <div class="text-center">
+                    <button type="submit" name="backToInput" class="btn btn-primary">修正</button>
+                    <button type="submit" name="calculation" class="btn btn-primary">概算見積もりをする</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="../js/jquery-3.4.1.min.js" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+<script src="../js/popper.min.js" th:src="@{/js/popper.min.js}"></script>
+<script src="../js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+
+</html>
