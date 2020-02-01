@@ -157,8 +157,10 @@ public class EstimateController {
 
         UserOrderDto dto = new UserOrderDto();
         BeanUtils.copyProperties(userOrderForm, dto);
-        estimateService.registerOrder(dto);
-
+        boolean flag = estimateService.registerOrder(dto);
+        if (flag==false){
+            return "duplicate";
+        }
         return "complete";
     }
 
