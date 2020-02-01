@@ -29,7 +29,26 @@ public class EstimateDao {
     public EstimateDao(NamedParameterJdbcTemplate parameterJdbcTemplate) {
         this.parameterJdbcTemplate = parameterJdbcTemplate;
     }
-
+    /**
+     * 顧客テーブルの重複をチェックする
+     * @param customer 顧客情報
+     * @return boolean True:重複なし, False:重複あり
+     */
+    public boolean DuplicateCustomer(Customer customer) {
+        String sql = "SELECT 1 FROM CUSTOMER "
+                + "WHERE(CUSTOMER_NAME=:customerName AND TEL=:tel AND EMAIL=:email) LIMIT 1";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int res_num=0;
+        try {
+            res_num = parameterJdbcTemplate.queryForObject(sql, new BeanPropertySqlParameterSource(customer), int.class);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            res_num = 0;
+        }
+        if (res_num==1){
+            return false;
+        }
+        return true;
+    }
     /**
      * 顧客テーブルに登録する。
      *
