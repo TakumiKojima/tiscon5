@@ -40,11 +40,17 @@ public class EstimateService {
      * 見積もり依頼をDBに登録する。
      *
      * @param dto 見積もり依頼情報
+     * @return boolean 登録できたかどうか
      */
     @Transactional
-    public void registerOrder(UserOrderDto dto) {
+    public boolean registerOrder(UserOrderDto dto) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(dto, customer);
+
+        if (estimateDAO.DuplicateCustomer(customer)==false){
+            return false;
+        }
+
         estimateDAO.insertCustomer(customer);
 
         if (dto.hasWashingMachineSettingOption()) {
@@ -61,6 +67,9 @@ public class EstimateService {
         packageList.add(new CustomerPackage(customer.getCustomerId(), PackageType.BICYCLE.getCode(), dto.getBicycle()));
         packageList.add(new CustomerPackage(customer.getCustomerId(), PackageType.WASHING_MACHINE.getCode(), dto.getWashingMachine()));
         estimateDAO.batchInsertCustomerPackage(packageList);
+
+        return true;
+
     }
 
     /**
