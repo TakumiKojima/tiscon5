@@ -8,6 +8,7 @@
   <link rel="stylesheet" th:href="@{http://fonts.googleapis.com/css?family=Exo:900}"
         href="http://fonts.googleapis.com/css?family=Exo:900"/>
   <link rel="stylesheet" th:href="@{/css/main.css}" href="../static/css/main.css">
+  <link th:href="@{/resources/static/css/base.css}" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -15,9 +16,52 @@
 <div class="container">
   <form th:action="@{/result}" th:object="${userOrderForm}" class="form-horizontal" method="post">
     <h1>お見積り情報確認</h1>
+    <!--
     <ul th:if="${#fields.hasErrors('all')}">
+      <font color="red">
       <li th:each="err : ${#fields.errors('all')}" th:text="${err}"></li>
+      </font>
     </ul>
+    -->
+    <font color="red">
+      <ul th:if="${#fields.hasErrors('customerName')}">
+        <li><span th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}"></span></li>
+      </ul>
+      <ul th:if="${#fields.hasErrors('tel')}">
+        <li><span th:if="${#fields.hasErrors('tel')}" th:errors="*{email}"></span></li>
+      </ul>
+      <ul th:if="${#fields.hasErrors('email')}">
+        <li><span th:if="${#fields.hasErrors('email')}" th:errors="*{tel}"></span></li>
+      </ul>
+      <ul th:if="${#fields.hasErrors('oldPrefectureId')}">
+        <li><span th:if="${#fields.hasErrors('oldPrefectureId')}" th:errors="*{oldPrefectureId}"></span></li>
+      </ul>
+      <ul th:if="${#fields.hasErrors('oldAddress')}">
+        <li><span th:if="${#fields.hasErrors('oldAddress')}" th:errors="*{oldAddress}"></span></li>
+      </ul>
+      <ul th:if="${#fields.hasErrors('newPrefectureId')}">
+        <li><span th:if="${#fields.hasErrors('newPrefectureId')}" th:errors="*{newPrefectureId}"></span></li>
+      </ul>
+      <ul th:if="${#fields.hasErrors('newAddress')}">
+        <li><span th:if="${#fields.hasErrors('newAddress')}" th:errors="*{newAddress}"></span></li>
+      </ul>
+      <ul th:if="${#fields.hasErrors('box')}">
+        <li><span th:if="${#fields.hasErrors('box')}" th:errors="*{box}"></span></li>
+      </ul>
+      <ul th:if="${#fields.hasErrors('bed')}">
+        <li><span th:if="${#fields.hasErrors('bed')}" th:errors="*{bed}"></span></li>
+      </ul>
+      <ul th:if="${#fields.hasErrors('bicycle')}">
+        <li><span th:if="${#fields.hasErrors('bicycle')}" th:errors="*{bicycle}"></span></li>
+      </ul>
+      <ul th:if="${#fields.hasErrors('washingMachine')}">
+        <li><span th:if="${#fields.hasErrors('washingMachine')}" th:errors="*{washingMachine}"></span></li>
+      </ul>
+      <ul th:if="${#fields.hasErrors('hasWashingMachineSettingOption')}">
+        <li><span th:if="${#fields.hasErrors('hasWashingMachineSettingOption')}" th:errors="*{hasWashingMachineSettingOption}"></span></li>
+      </ul>
+    </font>
+
     <div class="col-sm-12">
       <h4>個人情報</h4>
       <table class="table table-bordered">
@@ -27,41 +71,41 @@
         <tr>
           <th style="width: 40%">氏名</th>
           <td><span th:text="*{customerName}"></span></td>
-          <input type="hidden" name="customerName" id="customerName" th:value="*{customerName}"/>
+          <input type="hidden" name="customerName" id="customerName" th:value="*{customerName}" />
         </tr>
         <tr>
           <th>連絡先TEL</th>
           <td><span th:text="*{tel}"></span></td>
-          <input type="hidden" name="tel" id="tel" th:value="*{tel}"/>
+          <input type="hidden" name="tel" id="tel" th:value="*{tel}" th:errorclass="fieldError"/>
         </tr>
         <tr>
           <th>連絡先メールアドレス</th>
           <td><span th:text="*{email}"></span></td>
-          <input type="hidden" name="email" id="email" th:value="*{email}"/>
+          <input type="hidden" name="email" id="email" th:value="*{email}" th:errorclass="fieldError"/>
         </tr>
         <tr>
           <th>転居元住所（都道府県）</th>
           <td>
             <span th:each="prefecture : ${prefectures}" th:text="${prefecture.prefectureName}" th:if="${prefecture.prefectureId}==*{oldPrefectureId}">東京</span>
           </td>
-          <input type="hidden" name="oldPrefectureId" id="oldPrefectureId" th:value="*{oldPrefectureId}"/>
+          <input type="hidden" name="oldPrefectureId" id="oldPrefectureId" th:value="*{oldPrefectureId}" />
         </tr>
         <tr>
           <th>転居元住所（市区町村以下）</th>
           <td><span th:text="*{oldAddress}"></span></td>
-          <input type="hidden" name="oldAddress" id="oldAddress" th:value="*{oldAddress}"/>
+          <input type="hidden" name="oldAddress" id="oldAddress" th:value="*{oldAddress}" />
         </tr>
         <tr>
           <th>転居先住所（都道府県）</th>
           <td>
             <span th:each="prefecture : ${prefectures}" th:text="${prefecture.prefectureName}" th:if="${prefecture.prefectureId}==*{newPrefectureId}">大阪</span>
           </td>
-          <input type="hidden" name="newPrefectureId" id="newPrefectureId" th:value="*{newPrefectureId}"/>
+          <input type="hidden" name="newPrefectureId" id="newPrefectureId" th:value="*{newPrefectureId}" />
         </tr>
         <tr>
           <th>転居先住所（市区町村以下）</th>
           <td><span th:text="*{newAddress}"></span></td>
-          <input type="hidden" name="newAddress" id="newAddress" th:value="*{newAddress}"/>
+          <input type="hidden" name="newAddress" id="newAddress" th:value="*{newAddress}" />
         </tr>
         </tbody>
       </table>
