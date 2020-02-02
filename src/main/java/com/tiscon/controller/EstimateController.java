@@ -134,10 +134,6 @@ public class EstimateController {
 
         dto.setWashingMachineSettingOption(userOrderForm.getHasWashingMachineSettingOption());
 
-//        if (dto.hasWashingMachineSettingOption()){
-//            return "top";
-//        }
-
         Integer price = estimateService.getPrice(dto);
 
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
@@ -172,12 +168,13 @@ public class EstimateController {
             model.addAttribute("userOrderForm", userOrderForm);
             return "prefecture_error";
         }
-
-        if (estimateService.registerOrder(dto) == false){
+        boolean flag=estimateService.registerOrder(dto);
+        if (flag == false){
             model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
             model.addAttribute("userOrderForm", userOrderForm);
             return "duplicate";
         }
+
         return "complete";
     }
 

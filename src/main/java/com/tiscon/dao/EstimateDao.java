@@ -46,7 +46,7 @@ public class EstimateDao {
         } catch (IncorrectResultSizeDataAccessException e) {
             res_num = 0;
         }
-        if (res_num==1){
+        if (res_num == 1){
             return false;
         }
         return true;
