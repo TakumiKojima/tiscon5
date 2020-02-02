@@ -29,6 +29,8 @@ public class EstimateDao {
     public EstimateDao(NamedParameterJdbcTemplate parameterJdbcTemplate) {
         this.parameterJdbcTemplate = parameterJdbcTemplate;
     }
+
+
     /**
      * 顧客テーブルの重複をチェックする
      * @param customer 顧客情報
@@ -89,6 +91,37 @@ public class EstimateDao {
 
         return parameterJdbcTemplate.batchUpdate(sql, batch);
     }
+
+    /**
+     * 都道府県の入力誤りをはじく
+     *
+     * @param customer
+     * @return True:正しい県番号, False:誤った県番号
+     */
+    public boolean checkPrefectureId(Customer customer){
+        String sql_old = "SELECT 1 FROM PREFECTURE "
+                + "WHERE(PREFECTURE_ID=:oldPrefectureId) LIMIT 1";
+        String sql_new = "SELECT 1 FROM PREFECTURE "
+                + "WHERE(PREFECTURE_ID=:newPrefectureId) LIMIT 1";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int res_old;
+        int res_new;
+        try {
+            res_old = parameterJdbcTemplate.queryForObject(sql_old, new BeanPropertySqlParameterSource(customer), int.class);
+            res_new = parameterJdbcTemplate.queryForObject(sql_new, new BeanPropertySqlParameterSource(customer), int.class);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            res_old = 0;
+            res_new = 0;
+        }
+        if (res_old == 0 || res_new == 0){
+            return false;
+        }
+        return true;
+    }
+//
+//
+
+
 
     /**
      * 都道府県テーブルに登録されているすべての都道府県を取得する。

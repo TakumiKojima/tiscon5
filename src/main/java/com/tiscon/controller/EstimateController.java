@@ -135,6 +135,7 @@ public class EstimateController {
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
         model.addAttribute("userOrderForm", userOrderForm);
         model.addAttribute("price", price);
+
         return "result";
     }
 
@@ -157,8 +158,16 @@ public class EstimateController {
 
         UserOrderDto dto = new UserOrderDto();
         BeanUtils.copyProperties(userOrderForm, dto);
-        boolean flag = estimateService.registerOrder(dto);
-        if (flag==false){
+
+        if (estimateService.registerFilter(dto)==false){
+            model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
+            model.addAttribute("userOrderForm", userOrderForm);
+            return "prefecture_error";
+        }
+
+        if (estimateService.registerOrder(dto) == false){
+            model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
+            model.addAttribute("userOrderForm", userOrderForm);
             return "duplicate";
         }
         return "complete";
