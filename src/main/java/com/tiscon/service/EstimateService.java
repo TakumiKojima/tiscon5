@@ -37,6 +37,22 @@ public class EstimateService {
     }
 
     /**
+     * 登録情報に誤りがないかチェックする。
+     *
+     * @param dto 見積もり依頼情報
+     * @return boolean 登録してよいかどうか
+     */
+    public boolean registerFilter(UserOrderDto dto){
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(dto, customer);
+        if (estimateDAO.checkPrefectureId(customer)==false){
+            return false;
+        }
+
+
+        return true;
+    }
+    /**
      * 見積もり依頼をDBに登録する。
      *
      * @param dto 見積もり依頼情報
