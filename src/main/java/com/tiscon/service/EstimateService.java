@@ -48,8 +48,6 @@ public class EstimateService {
         if (estimateDAO.checkPrefectureId(customer)==false){
             return false;
         }
-
-
         return true;
     }
     /**
@@ -62,6 +60,7 @@ public class EstimateService {
     public boolean registerOrder(UserOrderDto dto) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(dto, customer);
+
 
         if (estimateDAO.DuplicateCustomer(customer)==false){
             return false;

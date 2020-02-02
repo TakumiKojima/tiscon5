@@ -46,7 +46,7 @@ public class EstimateDao {
         } catch (IncorrectResultSizeDataAccessException e) {
             res_num = 0;
         }
-        if (res_num==1){
+        if (res_num == 1){
             return false;
         }
         return true;
@@ -121,8 +121,6 @@ public class EstimateDao {
 //
 //
 
-
-
     /**
      * 都道府県テーブルに登録されているすべての都道府県を取得する。
      *
@@ -181,18 +179,24 @@ public class EstimateDao {
      * @return 料金[円]
      */
     public int getPricePerTruck(int boxNum) {
+        String get_fourTruckCap = "SELECT MAX_BOX FROM TRUCK_CAPACITY ORDER BY PRICE DESC LIMIT 1";
+        SqlParameterSource param1 = new MapSqlParameterSource();
+        Integer fourTrackCap = parameterJdbcTemplate.queryForObject(get_fourTruckCap, param1, Integer.class);
 
-            int fourTruck = boxNum / 200;
-            int remainder = boxNum - 200 * fourTruck;
-            int ans = 0;
-            if(remainder != 0){
-                String sql = "SELECT PRICE FROM TRUCK_CAPACITY WHERE MAX_BOX >= :remainder ORDER BY PRICE LIMIT 1";
+        String get_fourTruckPrice = "SELECT PRICE FROM TRUCK_CAPACITY ORDER BY PRICE DESC LIMIT 1";
+        SqlParameterSource param2 = new MapSqlParameterSource();
+        Integer fourTrackPrice = parameterJdbcTemplate.queryForObject(get_fourTruckPrice, param2, Integer.class);
 
-                SqlParameterSource paramSource = new MapSqlParameterSource("remainder", remainder);
-                ans = parameterJdbcTemplate.queryForObject(sql, paramSource, Integer.class);
-            }
-            return ans + 50000 * fourTruck;
+        int fourTruckNum = boxNum / fourTrackCap;
+        int remainder = boxNum - fourTrackCap * fourTruckNum;
+        int ans = 0;
+        if(remainder != 0){
+            String sql = "SELECT PRICE FROM TRUCK_CAPACITY WHERE MAX_BOX >= :remainder ORDER BY PRICE LIMIT 1";
 
+            SqlParameterSource paramSource = new MapSqlParameterSource("remainder", remainder);
+            ans = parameterJdbcTemplate.queryForObject(sql, paramSource, Integer.class);
+        }
+        return ans + fourTrackPrice * fourTruckNum;
     }
 
     /**
