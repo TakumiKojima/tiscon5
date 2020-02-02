@@ -1,6 +1,7 @@
 package com.tiscon.controller;
 
 import com.tiscon.dao.EstimateDao;
+import com.tiscon.domain.CustomerOptionService;
 import com.tiscon.dto.UserOrderDto;
 import com.tiscon.form.UserOrderForm;
 import com.tiscon.service.EstimateService;
@@ -23,7 +24,6 @@ public class EstimateController {
     private final EstimateDao estimateDAO;
 
     private final EstimateService estimateService;
-
     /**
      * コンストラクタ
      *
@@ -53,6 +53,7 @@ public class EstimateController {
         }
 
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
+
         return "input";
     }
 
@@ -130,11 +131,19 @@ public class EstimateController {
         //料金の計算を行う。
         UserOrderDto dto = new UserOrderDto();
         BeanUtils.copyProperties(userOrderForm, dto);
+
+        dto.setWashingMachineSettingOption(userOrderForm.getHasWashingMachineSettingOption());
+
+//        if (dto.hasWashingMachineSettingOption()){
+//            return "top";
+//        }
+
         Integer price = estimateService.getPrice(dto);
 
         model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
         model.addAttribute("userOrderForm", userOrderForm);
         model.addAttribute("price", price);
+
         return "result";
     }
 
@@ -157,8 +166,16 @@ public class EstimateController {
 
         UserOrderDto dto = new UserOrderDto();
         BeanUtils.copyProperties(userOrderForm, dto);
-        boolean flag = estimateService.registerOrder(dto);
-        if (flag==false){
+
+        if (estimateService.registerFilter(dto)==false){
+            model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
+            model.addAttribute("userOrderForm", userOrderForm);
+            return "prefecture_error";
+        }
+
+        if (estimateService.registerOrder(dto) == false){
+            model.addAttribute("prefectures", estimateDAO.getAllPrefectures());
+            model.addAttribute("userOrderForm", userOrderForm);
             return "duplicate";
         }
         return "complete";
